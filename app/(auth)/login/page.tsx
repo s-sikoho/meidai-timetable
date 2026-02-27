@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,40 +38,6 @@ export default function LoginPage() {
     router.push("/me");
     router.refresh();
   }
-
-  async function onSignUp() {
-    setLoading(true);
-    setError(null);
-    setMessage(null);
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        // 確認メールのリンクを踏んだ後、ここに戻す
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
-    setLoading(false);
-
-    if (error) {
-      setError(error.message);
-      return;
-    }
-
-    // Confirm sign up ON の場合は多くが「メール確認待ち」になる
-    if (!data.session) {
-      setMessage(
-        "確認メールを送信しました。メールのリンクを開いて登録を完了してください。",
-      );
-      return;
-    }
-
-    // Confirm sign up OFF の場合など：すぐログイン済みになり得る
-    router.push("/me");
-    router.refresh();
-  }
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       <Button
@@ -95,13 +62,11 @@ export default function LoginPage() {
             {/* ここに移動 */}
             <div className="text-left">
               <Button
-                type="button"
+                asChild
                 variant="link"
                 className="p-0 h-auto justify-start cursor-pointer"
-                onClick={onSignUp}
-                disabled={loading || !email || !password}
               >
-                Sign Up
+                <Link href="/signup">Create account</Link>
               </Button>
             </div>
 
