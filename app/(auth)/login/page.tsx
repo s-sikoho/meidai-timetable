@@ -2,10 +2,75 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function onLogin(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    // ログイン成功 → 自分のページへ
+    router.push("/me");
+    router.refresh();
+  }
+
+  async function onSignUp() {
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        // 確認メールのリンクを踏んだ後、ここに戻す
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    // Confirm sign up ON の場合は多くが「メール確認待ち」になる
+    if (!data.session) {
+      setMessage(
+        "確認メールを送信しました。メールのリンクを開いて登録を完了してください。",
+      );
+      return;
+    }
+
+    // Confirm sign up OFF の場合など：すぐログイン済みになり得る
+    router.push("/me");
+    router.refresh();
+  }
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       <Button
@@ -25,11 +90,17 @@ export default function LoginPage() {
             Enter your email below to login to your account
           </div>
         </div>
-        <form>
+        <form onSubmit={onLogin}>
           <div className="flex flex-col gap-6">
             {/* ここに移動 */}
             <div className="text-left">
-              <Button variant="link" className="p-0 h-auto justify-start">
+              <Button
+                type="button"
+                variant="link"
+                className="p-0 h-auto justify-start cursor-pointer"
+                onClick={onSignUp}
+                disabled={loading || !email || !password}
+              >
                 Sign Up
               </Button>
             </div>
@@ -41,6 +112,8 @@ export default function LoginPage() {
                 type="email"
                 placeholder="m@example.com"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -48,17 +121,31 @@ export default function LoginPage() {
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
                 <a
-                  href="#"
+                  href="/forgot"
                   className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Forgot your password?
                 </a>
               </div>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
-            <Button type="submit" className="w-full">
-              Login
+            {error && <div className="text-sm text-red-600">{error}</div>}
+            {message && <div className="text-sm text-green-700">{message}</div>}
+
+            <Button
+              type="submit"
+              className="w-full cursor-pointer"
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Login"}
             </Button>
           </div>
         </form>
