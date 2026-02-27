@@ -1,10 +1,23 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <Button
+        type="button"
+        variant="ghost"
+        className="absolute top-4 left-4"
+        onClick={() => {
+          router.push("/");
+        }}
+      >
+        timetable
+      </Button>
       <div className="w-full max-w-sm space-y-4">
         <div className="space-y-1">
           <div className="text-xl font-semibold">Login to your account</div>
