@@ -54,16 +54,19 @@ const DAYS: { key: Day; label: string }[] = [
 ];
 const PERIODS = [1, 2, 3, 4, 5] as const;
 
+const DEPARTMENTS = ["医", "情報", "理", "工", "文", "経済", "法"] as const;
+type Department = (typeof DEPARTMENTS)[number];
+const isDepartment = (v: string): v is Department =>
+  (DEPARTMENTS as readonly string[]).includes(v);
+
 type course_section = "言語教養" | "自然教養" | "専門基礎" | "専門";
 type Course = {
   id: string;
   title: string;
-  department: string;
+  department: Department;
   section: course_section;
 };
 type CellKey = `${Day}-${number}`;
-
-const DEPARTMENTS: string[] = ["医", "情報", "理", "工", "文", "経済", "法"];
 const SECTIONS: course_section[] = ["言語教養", "自然教養", "専門基礎", "専門"];
 const COURSES: Course[] = [
   { id: "c1", title: "線形代数", department: "情報", section: "自然教養" },
@@ -96,7 +99,7 @@ export default function TimetablePage() {
   const [activeCourseId, setActiveCourseId] = React.useState<string | null>(
     null,
   );
-  const [dept, setDept] = React.useState<string | null>(null);
+  const [dept, setDept] = React.useState<Department | null>(null);
 
   const addToCell = React.useCallback(
     (day: Day, period: number, courseId: string) => {
@@ -158,7 +161,7 @@ export default function TimetablePage() {
           <div className="mb-2">
             <Select
               value={dept ?? ""}
-              onValueChange={(v) => setDept(v || null)}
+              onValueChange={(v) => setDept(isDepartment(v) ? v : null)}
             >
               <SelectTrigger className="w-full max-w-48">
                 <SelectValue placeholder="授業一覧（学部）" />
@@ -181,11 +184,11 @@ export default function TimetablePage() {
                 <AccordionContent>
                   <ScrollArea className="h-108 pr-3">
                     <div className="space-y-2">
-                      {COURSES.filter((c) => c.section === section)
-                        .filter((c) => (dept ? c.department === dept : true))
-                        .map((item) => (
+                      {COURSES.filter((c) => c.section === section).map(
+                        (item) => (
                           <CourseDraggable key={item.id} course={item} />
-                        ))}
+                        ),
+                      )}
                     </div>
                   </ScrollArea>
                 </AccordionContent>
