@@ -59,26 +59,60 @@ type Department = (typeof DEPARTMENTS)[number];
 const isDepartment = (v: string): v is Department =>
   (DEPARTMENTS as readonly string[]).includes(v);
 
-type course_section = "言語教養" | "自然教養" | "専門基礎" | "専門";
+const SECTIONS = ["言語教養", "自然教養", "専門基礎", "専門"] as const;
+type Section = (typeof SECTIONS)[number];
+const isSection = (v: string): v is Section =>
+  (SECTIONS as readonly string[]).includes(v);
+
+const SEMESTERS = ["春1", "春2", "秋1", "秋2", "集中"] as const;
+type Semester = (typeof SEMESTERS)[number];
+const isSemester = (v: string): v is Semester =>
+  (SEMESTERS as readonly string[]).includes(v);
+
 type Course = {
   id: string;
   title: string;
   department: Department;
-  section: course_section;
+  section: Section;
+  semester: Semester;
 };
 type CellKey = `${Day}-${number}`;
-const SECTIONS: course_section[] = ["言語教養", "自然教養", "専門基礎", "専門"];
 const COURSES: Course[] = [
-  { id: "c1", title: "線形代数", department: "情報", section: "自然教養" },
-  { id: "c2", title: "確率統計", department: "情報", section: "専門" },
-  { id: "c3", title: "データ構造", department: "情報", section: "専門" },
+  {
+    id: "c1",
+    title: "線形代数",
+    department: "情報",
+    section: "自然教養",
+    semester: "春1",
+  },
+  {
+    id: "c2",
+    title: "確率統計",
+    department: "情報",
+    section: "専門",
+    semester: "春1",
+  },
+  {
+    id: "c3",
+    title: "データ構造",
+    department: "情報",
+    section: "専門",
+    semester: "春1",
+  },
   {
     id: "c4",
     title: "オペレーティングシステム",
     department: "情報",
     section: "専門",
+    semester: "春2",
   },
-  { id: "c5", title: "英語", department: "情報", section: "言語教養" },
+  {
+    id: "c5",
+    title: "英語",
+    department: "情報",
+    section: "言語教養",
+    semester: "春2",
+  },
 ];
 
 function cellKey(day: Day, period: number): CellKey {
@@ -100,6 +134,7 @@ export default function TimetablePage() {
     null,
   );
   const [dept, setDept] = React.useState<Department | null>(null);
+  const [seme, SetSeme] = React.useState<Semester | null>(null);
 
   const addToCell = React.useCallback(
     (day: Day, period: number, courseId: string) => {
@@ -160,6 +195,23 @@ export default function TimetablePage() {
         <div className="w-72 shrink-0">
           <div className="mb-2">
             <Select
+              value={seme ?? ""}
+              onValueChange={(v) => SetSeme(isSemester(v) ? v : null)}
+            >
+              <SelectTrigger className="w-full max-w-48">
+                <SelectValue placeholder="授業一覧（学期）" />
+              </SelectTrigger>
+              <SelectContent className="z-50">
+                <SelectGroup>
+                  {SEMESTERS.map((item) => (
+                    <SelectItem key={item} value={item}>
+                      {item}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select
               value={dept ?? ""}
               onValueChange={(v) => setDept(isDepartment(v) ? v : null)}
             >
@@ -184,11 +236,12 @@ export default function TimetablePage() {
                 <AccordionContent>
                   <ScrollArea className="h-108 pr-3">
                     <div className="space-y-2">
-                      {COURSES.filter((c) => c.section === section).map(
-                        (item) => (
+                      {COURSES.filter((c) => c.section === section)
+                        .filter((c) => (dept ? c.department === dept : true))
+                        .filter((c) => (seme ? c.semester === seme : true))
+                        .map((item) => (
                           <CourseDraggable key={item.id} course={item} />
-                        ),
-                      )}
+                        ))}
                     </div>
                   </ScrollArea>
                 </AccordionContent>
