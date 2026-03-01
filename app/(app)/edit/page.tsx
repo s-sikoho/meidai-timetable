@@ -53,6 +53,15 @@ const DAYS: { key: Day; label: string }[] = [
   { key: "Fri", label: "金" },
 ];
 const PERIODS = [1, 2, 3, 4, 5] as const;
+type CellKey = `${Day}-${number}`;
+const CELL_KEYS: { key: CellKey; label: string }[] = DAYS.flatMap((d) =>
+  PERIODS.map((p) => ({
+    key: `${d.key}-${p}` as CellKey,
+    label: `${d.label}${p}`, // 例: 月1
+  })),
+);
+const isCellKey = (v: string): v is CellKey =>
+  CELL_KEYS.some((c) => c.key === v);
 
 const DEPARTMENTS = ["医", "情報", "理", "工", "文", "経済", "法"] as const;
 type Department = (typeof DEPARTMENTS)[number];
@@ -75,8 +84,8 @@ type Course = {
   department: Department;
   section: Section;
   semester: Semester;
+  cellKey: CellKey;
 };
-type CellKey = `${Day}-${number}`;
 const COURSES: Course[] = [
   {
     id: "c1",
@@ -84,6 +93,7 @@ const COURSES: Course[] = [
     department: "情報",
     section: "自然教養",
     semester: "春1",
+    cellKey: "Mon-1",
   },
   {
     id: "c2",
@@ -91,6 +101,7 @@ const COURSES: Course[] = [
     department: "情報",
     section: "専門",
     semester: "春1",
+    cellKey: "Mon-1",
   },
   {
     id: "c3",
@@ -98,6 +109,7 @@ const COURSES: Course[] = [
     department: "情報",
     section: "専門",
     semester: "春1",
+    cellKey: "Mon-1",
   },
   {
     id: "c4",
@@ -105,6 +117,7 @@ const COURSES: Course[] = [
     department: "情報",
     section: "専門",
     semester: "春2",
+    cellKey: "Mon-1",
   },
   {
     id: "c5",
@@ -112,6 +125,7 @@ const COURSES: Course[] = [
     department: "情報",
     section: "言語教養",
     semester: "春2",
+    cellKey: "Mon-1",
   },
 ];
 
@@ -134,6 +148,7 @@ export default function TimetablePage() {
     null,
   );
   const [dept, setDept] = React.useState<Department | null>(null);
+  const [cell, setCell] = React.useState<CellKey | null>(null);
   const [seme, SetSeme] = React.useState<Semester | null>(null);
 
   const addToCell = React.useCallback(
@@ -195,11 +210,28 @@ export default function TimetablePage() {
         <div className="w-72 shrink-0">
           <div className="mb-2">
             <Select
+              value={cell ?? ""}
+              onValueChange={(v) => setCell(isCellKey(v) ? v : null)}
+            >
+              <SelectTrigger className="w-full max-w-48">
+                <SelectValue placeholder="曜日・時限" />
+              </SelectTrigger>
+              <SelectContent className="z-50">
+                <SelectGroup>
+                  {CELL_KEYS.map((item) => (
+                    <SelectItem key={item.key} value={item.key}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select
               value={seme ?? ""}
               onValueChange={(v) => SetSeme(isSemester(v) ? v : null)}
             >
               <SelectTrigger className="w-full max-w-48">
-                <SelectValue placeholder="授業一覧（学期）" />
+                <SelectValue placeholder="学期" />
               </SelectTrigger>
               <SelectContent className="z-50">
                 <SelectGroup>
@@ -216,7 +248,7 @@ export default function TimetablePage() {
               onValueChange={(v) => setDept(isDepartment(v) ? v : null)}
             >
               <SelectTrigger className="w-full max-w-48">
-                <SelectValue placeholder="授業一覧（学部）" />
+                <SelectValue placeholder="学部" />
               </SelectTrigger>
               <SelectContent className="z-50">
                 <SelectGroup>
@@ -234,11 +266,12 @@ export default function TimetablePage() {
               <AccordionItem key={section} value={section}>
                 <AccordionTrigger>{section}</AccordionTrigger>
                 <AccordionContent>
-                  <ScrollArea className="h-108 pr-3">
+                  <ScrollArea className="h-90 pr-3">
                     <div className="space-y-2">
                       {COURSES.filter((c) => c.section === section)
                         .filter((c) => (dept ? c.department === dept : true))
                         .filter((c) => (seme ? c.semester === seme : true))
+                        .filter((c) => (cell ? c.cellKey === cell : true))
                         .map((item) => (
                           <CourseDraggable key={item.id} course={item} />
                         ))}
@@ -307,19 +340,21 @@ export default function TimetablePage() {
                 <CommandInput placeholder="授業を検索…" />
                 <CommandEmpty>見つかりません</CommandEmpty>
                 <CommandGroup heading="授業">
-                  {COURSES.map((c) => (
-                    <CommandItem
-                      key={c.id}
-                      value={c.title}
-                      onSelect={() => {
-                        if (!activeCell) return;
-                        addToCell(activeCell.day, activeCell.period, c.id);
-                        setOpenCellPicker(false);
-                      }}
-                    >
-                      {c.title}
-                    </CommandItem>
-                  ))}
+                  <ScrollArea className="h-40 pr-3">
+                    {COURSES.map((c) => (
+                      <CommandItem
+                        key={c.id}
+                        value={c.title}
+                        onSelect={() => {
+                          if (!activeCell) return;
+                          addToCell(activeCell.day, activeCell.period, c.id);
+                          setOpenCellPicker(false);
+                        }}
+                      >
+                        {c.title}
+                      </CommandItem>
+                    ))}
+                  </ScrollArea>
                 </CommandGroup>
               </Command>
             </PopoverContent>
