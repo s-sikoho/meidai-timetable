@@ -18,7 +18,7 @@ import {
 const navItems = [
   { title: "my timetable", href: "/me" },
   { title: "create/edit", href: "/edit" },
-  { title: "view timetabes", href: "/shared" },
+  { title: "view timetabes", href: "/shareds" },
 ];
 
 export function AppSidebar() {
