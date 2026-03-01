@@ -63,6 +63,7 @@ export type Course = {
   section: Section;
   semester: Semester;
   cellKey?: CellKey;
+  teacher?: string;
 };
 
 export const COURSES: Course[] = [
