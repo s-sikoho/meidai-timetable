@@ -53,7 +53,13 @@ const DAYS: { key: Day; label: string }[] = [
   { key: "Fri", label: "金" },
 ];
 const PERIODS = [1, 2, 3, 4, 5] as const;
-type CellKey = `${Day}-${number}`;
+type Period = (typeof PERIODS)[number];
+const isPeriod = (n: number): n is Period =>
+  (PERIODS as readonly number[]).includes(n);
+type CellKey = `${Day}-${Period}`;
+function cellKey(day: Day, period: Period): CellKey {
+  return `${day}-${period}` as const;
+}
 const CELL_KEYS: { key: CellKey; label: string }[] = DAYS.flatMap((d) =>
   PERIODS.map((p) => ({
     key: `${d.key}-${p}` as CellKey,
@@ -84,7 +90,7 @@ type Course = {
   department: Department;
   section: Section;
   semester: Semester;
-  cellKey: CellKey;
+  cellKey?: CellKey;
 };
 const COURSES: Course[] = [
   {
@@ -129,18 +135,14 @@ const COURSES: Course[] = [
   },
 ];
 
-function cellKey(day: Day, period: number): CellKey {
-  return `${day}-${period}` as const;
-}
-
 // 時間割の配置（cell -> courseId）
-type Entries = Record<CellKey, string | undefined>;
+type Entries = Partial<Record<CellKey, string>>;
 
 export default function TimetablePage() {
   const [entries, setEntries] = React.useState<Entries>({});
   const [activeCell, setActiveCell] = React.useState<{
     day: Day;
-    period: number;
+    period: Period;
   } | null>(null);
   const [openCellPicker, setOpenCellPicker] = React.useState(false);
   // ★ DragOverlay用：いま掴んでる授業ID
@@ -150,9 +152,10 @@ export default function TimetablePage() {
   const [dept, setDept] = React.useState<Department | null>(null);
   const [cell, setCell] = React.useState<CellKey | null>(null);
   const [seme, SetSeme] = React.useState<Semester | null>(null);
+  const CLEAR_VALUE = "__CLEAR__" as const;
 
   const addToCell = React.useCallback(
-    (day: Day, period: number, courseId: string) => {
+    (day: Day, period: Period, courseId: string) => {
       const key = cellKey(day, period);
       setEntries((prev) => ({
         ...prev,
@@ -162,7 +165,7 @@ export default function TimetablePage() {
     [],
   );
 
-  const removeFromCell = React.useCallback((day: Day, period: number) => {
+  const removeFromCell = React.useCallback((day: Day, period: Period) => {
     const key = cellKey(day, period);
     setEntries((prev) => {
       const next = { ...prev };
@@ -191,8 +194,10 @@ export default function TimetablePage() {
 
     const key = overId.replace("cell:", "") as CellKey;
     const [day, periodStr] = key.split("-");
-    const period = Number(periodStr);
-    addToCell(day as Day, period, courseId);
+    const periodNum = Number(periodStr);
+    if (!isPeriod(periodNum)) return; // ★追加
+
+    addToCell(day as Day, periodNum, courseId);
   };
 
   const activeCourse = activeCourseId
@@ -208,33 +213,40 @@ export default function TimetablePage() {
       <div className="flex gap-4 p-4">
         {/* 左：授業一覧 */}
         <div className="w-72 shrink-0">
-          <div className="mb-2">
+          <div className="mb-2 grid grid-cols-2 gap-2">
             <Select
-              value={cell ?? ""}
-              onValueChange={(v) => setCell(isCellKey(v) ? v : null)}
+              value={dept ?? ""}
+              onValueChange={(v) =>
+                setDept(v === CLEAR_VALUE ? null : isDepartment(v) ? v : null)
+              }
             >
-              <SelectTrigger className="w-full max-w-48">
-                <SelectValue placeholder="曜日・時限" />
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="学部" />
               </SelectTrigger>
               <SelectContent className="z-50">
                 <SelectGroup>
-                  {CELL_KEYS.map((item) => (
-                    <SelectItem key={item.key} value={item.key}>
-                      {item.label}
+                  <SelectItem value={CLEAR_VALUE}>指定なし</SelectItem>
+                  {DEPARTMENTS.map((item) => (
+                    <SelectItem key={item} value={item}>
+                      {item}学部
                     </SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
+            <div />
             <Select
               value={seme ?? ""}
-              onValueChange={(v) => SetSeme(isSemester(v) ? v : null)}
+              onValueChange={(v) =>
+                SetSeme(v === CLEAR_VALUE ? null : isSemester(v) ? v : null)
+              }
             >
-              <SelectTrigger className="w-full max-w-48">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="学期" />
               </SelectTrigger>
               <SelectContent className="z-50">
                 <SelectGroup>
+                  <SelectItem value={CLEAR_VALUE}>指定なし</SelectItem>
                   {SEMESTERS.map((item) => (
                     <SelectItem key={item} value={item}>
                       {item}
@@ -244,17 +256,20 @@ export default function TimetablePage() {
               </SelectContent>
             </Select>
             <Select
-              value={dept ?? ""}
-              onValueChange={(v) => setDept(isDepartment(v) ? v : null)}
+              value={cell ?? ""}
+              onValueChange={(v) =>
+                setCell(v === CLEAR_VALUE ? null : isCellKey(v) ? v : null)
+              }
             >
-              <SelectTrigger className="w-full max-w-48">
-                <SelectValue placeholder="学部" />
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="コマ" />
               </SelectTrigger>
               <SelectContent className="z-50">
                 <SelectGroup>
-                  {DEPARTMENTS.map((item) => (
-                    <SelectItem key={item} value={item}>
-                      {item}学部
+                  <SelectItem value={CLEAR_VALUE}>指定なし</SelectItem>
+                  {CELL_KEYS.map((item) => (
+                    <SelectItem key={item.key} value={item.key}>
+                      {item.label}
                     </SelectItem>
                   ))}
                 </SelectGroup>
