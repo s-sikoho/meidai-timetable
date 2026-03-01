@@ -2,6 +2,26 @@
 
 import * as React from "react";
 import {
+  DAYS,
+  PERIODS,
+  CELL_KEYS,
+  DEPARTMENTS,
+  SECTIONS,
+  SEMESTERS,
+  COURSES,
+  isCellKey,
+  isDepartment,
+  isSemester,
+  isPeriod,
+  cellKey,
+  type Day,
+  type Period,
+  type CellKey,
+  type Course,
+  type Department,
+  type Semester,
+} from "@/lib/courses";
+import {
   DndContext,
   DragEndEvent,
   DragStartEvent,
@@ -43,98 +63,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-type Day = "Mon" | "Tue" | "Wed" | "Thu" | "Fri";
-const DAYS: { key: Day; label: string }[] = [
-  { key: "Mon", label: "月" },
-  { key: "Tue", label: "火" },
-  { key: "Wed", label: "水" },
-  { key: "Thu", label: "木" },
-  { key: "Fri", label: "金" },
-];
-const PERIODS = [1, 2, 3, 4, 5] as const;
-type Period = (typeof PERIODS)[number];
-const isPeriod = (n: number): n is Period =>
-  (PERIODS as readonly number[]).includes(n);
-type CellKey = `${Day}-${Period}`;
-function cellKey(day: Day, period: Period): CellKey {
-  return `${day}-${period}` as const;
-}
-const CELL_KEYS: { key: CellKey; label: string }[] = DAYS.flatMap((d) =>
-  PERIODS.map((p) => ({
-    key: `${d.key}-${p}` as CellKey,
-    label: `${d.label}${p}`, // 例: 月1
-  })),
-);
-const isCellKey = (v: string): v is CellKey =>
-  CELL_KEYS.some((c) => c.key === v);
-
-const DEPARTMENTS = ["医", "情報", "理", "工", "文", "経済", "法"] as const;
-type Department = (typeof DEPARTMENTS)[number];
-const isDepartment = (v: string): v is Department =>
-  (DEPARTMENTS as readonly string[]).includes(v);
-
-const SECTIONS = ["言語教養", "自然教養", "専門基礎", "専門"] as const;
-type Section = (typeof SECTIONS)[number];
-const isSection = (v: string): v is Section =>
-  (SECTIONS as readonly string[]).includes(v);
-
-const SEMESTERS = ["春1", "春2", "秋1", "秋2", "集中"] as const;
-type Semester = (typeof SEMESTERS)[number];
-const isSemester = (v: string): v is Semester =>
-  (SEMESTERS as readonly string[]).includes(v);
-
-type Course = {
-  id: string;
-  title: string;
-  department: Department;
-  section: Section;
-  semester: Semester;
-  cellKey?: CellKey;
-};
-const COURSES: Course[] = [
-  {
-    id: "c1",
-    title: "線形代数",
-    department: "情報",
-    section: "自然教養",
-    semester: "春1",
-    cellKey: "Mon-1",
-  },
-  {
-    id: "c2",
-    title: "確率統計",
-    department: "情報",
-    section: "専門",
-    semester: "春1",
-    cellKey: "Mon-1",
-  },
-  {
-    id: "c3",
-    title: "データ構造",
-    department: "情報",
-    section: "専門",
-    semester: "春1",
-    cellKey: "Mon-1",
-  },
-  {
-    id: "c4",
-    title: "オペレーティングシステム",
-    department: "情報",
-    section: "専門",
-    semester: "春2",
-    cellKey: "Mon-1",
-  },
-  {
-    id: "c5",
-    title: "英語",
-    department: "情報",
-    section: "言語教養",
-    semester: "春2",
-    cellKey: "Mon-1",
-  },
-];
-
 // 時間割の配置（cell -> courseId）
 type Entries = Partial<Record<CellKey, string>>;
 
