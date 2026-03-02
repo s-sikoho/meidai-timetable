@@ -65,12 +65,14 @@ import {
 } from "@/components/ui/select";
 // 時間割の配置（cell -> courseId）
 type Entries = Partial<Record<CellKey, string>>;
+type Intensives = Partial<Record<Day, string>>;
 
 export default function TimetablePage() {
   const [entries, setEntries] = React.useState<Entries>({});
+  const [intensives, setIntensives] = React.useState<Intensives>({});
   const [activeCell, setActiveCell] = React.useState<{
     day: Day;
-    period: Period;
+    period: Period | "intensive";
   } | null>(null);
   const [openCellPicker, setOpenCellPicker] = React.useState(false);
   // ★ DragOverlay用：いま掴んでる授業ID
@@ -93,11 +95,26 @@ export default function TimetablePage() {
     [],
   );
 
+  const addIntensive = React.useCallback((day: Day, courseId: string) => {
+    setIntensives((prev) => ({
+      ...prev,
+      [day]: courseId,
+    }));
+  }, []);
+
   const removeFromCell = React.useCallback((day: Day, period: Period) => {
     const key = cellKey(day, period);
     setEntries((prev) => {
       const next = { ...prev };
       delete next[key];
+      return next;
+    });
+  }, []);
+
+  const removeIntensive = React.useCallback((day: Day) => {
+    setIntensives((prev) => {
+      const next = { ...prev };
+      delete next[day];
       return next;
     });
   }, []);
@@ -119,6 +136,11 @@ export default function TimetablePage() {
 
     if (!overId) return;
     if (!overId.startsWith("cell:")) return;
+    if (overId.startsWith("cell:intensive:")) {
+      const day = overId.replace("cell:intensive:", "") as Day;
+      addIntensive(day, courseId);
+      return;
+    }
 
     const key = overId.replace("cell:", "") as CellKey;
     const [day, periodStr] = key.split("-");
@@ -242,7 +264,6 @@ export default function TimetablePage() {
                 {d.label}
               </div>
             ))}
-
             {/* グリッド本体 */}
             {PERIODS.map((p) => (
               <React.Fragment key={p}>
@@ -276,6 +297,39 @@ export default function TimetablePage() {
                 })}
               </React.Fragment>
             ))}
+            {/* ★追加：少し離して「集中」行 */}
+            <div className="col-span-6 mt-3" /> {/* 余白だけの行（任意） */}
+            <React.Fragment key="intensive">
+              <div className="flex items-center justify-center text-sm font-medium">
+                集中
+              </div>
+
+              {DAYS.map((d) => {
+                // 集中セル用のID（droppable用）。cellKey型とは別なので文字列でOK
+                const id = `cell:intensive:${d.key}`;
+                const courseId = intensives[d.key];
+                const course = courseId
+                  ? COURSES.find((x) => x.id === courseId)
+                  : null;
+
+                return (
+                  <TimetableCell
+                    key={id}
+                    id={id}
+                    day={d.key}
+                    period="intensive" // 表示/aria用に必要なら別propsにするのが理想
+                    courseTitle={course?.title ?? null}
+                    courseSection={course?.section ?? null}
+                    courseTeacher={course?.teacher ?? null}
+                    onClick={() => {
+                      setActiveCell({ day: d.key, period: "intensive" });
+                      setOpenCellPicker(true);
+                    }}
+                    onClear={() => removeIntensive(d.key)}
+                  />
+                );
+              })}
+            </React.Fragment>
           </div>
 
           {/* クリック追加：セル用の選択メニュー */}
@@ -290,13 +344,18 @@ export default function TimetablePage() {
                 <CommandEmpty>見つかりません</CommandEmpty>
                 <CommandGroup heading="授業">
                   <ScrollArea className="h-90 pr-3">
-                    {COURSES.filter(
-                      (c) =>
+                    {COURSES.filter((c) => {
+                      if (!activeCell) return false;
+                      if (activeCell.period === "intensive") {
+                        return (
+                          c.semester === "春集中" || c.semester === "秋集中"
+                        );
+                      }
+                      return (
                         c.cellKey != null &&
-                        activeCell != null &&
-                        c.cellKey ===
-                          cellKey(activeCell.day, activeCell.period),
-                    )
+                        c.cellKey === cellKey(activeCell.day, activeCell.period)
+                      );
+                    })
                       .filter((c) => {
                         if (!dept) return true;
                         if (c.department === "全学") return true;
@@ -309,6 +368,11 @@ export default function TimetablePage() {
                           value={`${c.title}__${c.id}`}
                           onSelect={() => {
                             if (!activeCell) return;
+                            if (activeCell.period === "intensive") {
+                              addIntensive(activeCell.day, c.id);
+                              setOpenCellPicker(false);
+                              return;
+                            }
                             addToCell(activeCell.day, activeCell.period, c.id);
                             setOpenCellPicker(false);
                           }}
@@ -391,7 +455,7 @@ function TimetableCell({
 }: {
   id: string;
   day: Day;
-  period: number;
+  period: number | "intensive";
   courseTitle: string | null;
   courseSection: string | null;
   courseTeacher: string | null;
