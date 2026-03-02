@@ -154,7 +154,7 @@ export default function TimetablePage() {
               <SelectContent className="z-50">
                 <SelectGroup>
                   <SelectItem value={CLEAR_VALUE}>指定なし</SelectItem>
-                  {DEPARTMENTS.map((item) => (
+                  {DEPARTMENTS.filter((d) => d !== "全学").map((item) => (
                     <SelectItem key={item} value={item}>
                       {item}学部
                     </SelectItem>
