@@ -264,6 +264,8 @@ export default function TimetablePage() {
                       day={d.key}
                       period={p}
                       courseTitle={course?.title ?? null}
+                      courseSection={course?.section ?? null}
+                      courseTeacher={course?.teacher ?? null}
                       onClick={() => {
                         setActiveCell({ day: d.key, period: p });
                         setOpenCellPicker(true);
@@ -287,7 +289,7 @@ export default function TimetablePage() {
                 <CommandInput placeholder="授業を検索…" />
                 <CommandEmpty>見つかりません</CommandEmpty>
                 <CommandGroup heading="授業">
-                  <ScrollArea className="h-40 pr-3">
+                  <ScrollArea className="h-90 pr-3">
                     {COURSES.filter(
                       (c) =>
                         c.cellKey != null &&
@@ -304,12 +306,26 @@ export default function TimetablePage() {
                       .map((c) => (
                         <CommandItem
                           key={c.id}
-                          value={c.title}
+                          value={`${c.title}__${c.id}`}
                           onSelect={() => {
                             if (!activeCell) return;
                             addToCell(activeCell.day, activeCell.period, c.id);
                             setOpenCellPicker(false);
                           }}
+                          className={cn(
+                            "!rounded-none", // ★丸み消す（確実に）
+                            "border-b border-border",
+                            "overflow-hidden", // これは残してOK（不要なら消しても可）
+
+                            c.section === "言語教養" && "bg-pink-100",
+                            c.section === "自然教養" && "bg-sky-100",
+                            c.section === "専門基礎" && "bg-purple-100",
+                            c.section === "専門" && "bg-orange-100",
+
+                            "data-[selected=true]:ring-2 data-[selected=true]:ring-primary data-[selected=true]:ring-inset",
+                            "hover:ring-2 hover:ring-primary hover:ring-inset",
+                            "data-[selected=true]:!bg-transparent hover:!bg-transparent",
+                          )}
                         >
                           {c.title}:{c.teacher ? c.teacher : ""}
                         </CommandItem>
@@ -368,6 +384,8 @@ function TimetableCell({
   day,
   period,
   courseTitle,
+  courseSection,
+  courseTeacher,
   onClick,
   onClear,
 }: {
@@ -375,26 +393,46 @@ function TimetableCell({
   day: Day;
   period: number;
   courseTitle: string | null;
+  courseSection: string | null;
+  courseTeacher: string | null;
   onClick: () => void;
   onClear: () => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id });
+  const ellipsis = (s: string, n = 7) => {
+    const arr = Array.from(s); // 日本語でも崩れにくい
+    return arr.length > n ? arr.slice(0, n).join("") + "…" : s;
+  };
 
   return (
     <Card
       ref={setNodeRef}
-      className={[
-        "relative h-20 rounded-md p-2",
-        "cursor-pointer transition",
-        isOver ? "ring-2 ring-primary" : "",
-      ].join(" ")}
+      className={cn(
+        "relative h-20 rounded-md p-2 pr-8 cursor-pointer transition overflow-hidden", // ★pr-8 + overflow-hidden
+        isOver && "ring-2 ring-primary",
+        courseSection === "言語教養" && "bg-pink-100",
+        courseSection === "自然教養" && "bg-sky-100",
+        courseSection === "専門基礎" && "bg-purple-100",
+        courseSection === "専門" && "bg-orange-100",
+      )}
       onClick={onClick}
       role="button"
       aria-label={`${day} ${period}限`}
     >
       {courseTitle ? (
         <>
-          <div className="text-sm font-semibold">{courseTitle}</div>
+          {/* ★×に被らないよう右を空けつつ、長いタイトルは折り返し（最大2行） */}
+          <div className="text-xs font-medium leading-snug">
+            {ellipsis(courseTitle, 7)}
+          </div>
+
+          {/* ★teacherは1行にして省略（必要ならline-clamp-2でもOK） */}
+          {courseTeacher ? (
+            <div className="mt-0.5 text-[11px] leading-snug text-muted-foreground truncate">
+              {courseTeacher}
+            </div>
+          ) : null}
+
           <Button
             variant="ghost"
             size="sm"
