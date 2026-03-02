@@ -32,7 +32,7 @@ import {
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { FileText } from "lucide-react";
-
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -288,19 +288,32 @@ export default function TimetablePage() {
                 <CommandEmpty>見つかりません</CommandEmpty>
                 <CommandGroup heading="授業">
                   <ScrollArea className="h-40 pr-3">
-                    {COURSES.map((c) => (
-                      <CommandItem
-                        key={c.id}
-                        value={c.title}
-                        onSelect={() => {
-                          if (!activeCell) return;
-                          addToCell(activeCell.day, activeCell.period, c.id);
-                          setOpenCellPicker(false);
-                        }}
-                      >
-                        {c.title}
-                      </CommandItem>
-                    ))}
+                    {COURSES.filter(
+                      (c) =>
+                        c.cellKey != null &&
+                        activeCell != null &&
+                        c.cellKey ===
+                          cellKey(activeCell.day, activeCell.period),
+                    )
+                      .filter((c) => {
+                        if (!dept) return true;
+                        if (c.department === "全学") return true;
+                        return c.department === dept;
+                      })
+                      .filter((c) => (seme ? c.semester === seme : true))
+                      .map((c) => (
+                        <CommandItem
+                          key={c.id}
+                          value={c.title}
+                          onSelect={() => {
+                            if (!activeCell) return;
+                            addToCell(activeCell.day, activeCell.period, c.id);
+                            setOpenCellPicker(false);
+                          }}
+                        >
+                          {c.title}:{c.teacher ? c.teacher : ""}
+                        </CommandItem>
+                      ))}
                   </ScrollArea>
                 </CommandGroup>
               </Command>
@@ -332,12 +345,20 @@ function CourseDraggable({ course }: { course: Course }) {
     <Card
       ref={setNodeRef}
       style={style}
-      className="cursor-grab select-none rounded-md p-3 active:cursor-grabbing"
+      className={cn(
+        "cursor-grab select-none rounded-md p-3 active:cursor-grabbing",
+        course.section === "言語教養" && "bg-pink-100",
+        course.section === "自然教養" && "bg-sky-100",
+        course.section === "専門基礎" && "bg-purple-100",
+        course.section === "専門" && "bg-orange-100",
+      )}
       {...listeners}
       {...attributes}
     >
       <div className="text-sm font-medium">{course.title}</div>
-      <div className="text-xs text-muted-foreground">ドラッグして配置</div>
+      <div className="text-xs text-muted-foreground">
+        {course.teacher ? course.teacher : "教官不明"}
+      </div>
     </Card>
   );
 }
