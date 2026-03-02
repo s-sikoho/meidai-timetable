@@ -38,6 +38,7 @@ export const DEPARTMENTS = [
   "文",
   "経済",
   "法",
+  "全学",
 ] as const;
 export type Department = (typeof DEPARTMENTS)[number];
 

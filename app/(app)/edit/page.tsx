@@ -212,7 +212,11 @@ export default function TimetablePage() {
                   <ScrollArea className="h-90 pr-3">
                     <div className="space-y-2">
                       {COURSES.filter((c) => c.section === section)
-                        .filter((c) => (dept ? c.department === dept : true))
+                        .filter((c) => {
+                          if (!dept) return true; // dept未選択なら全部
+                          if (c.department === "全学") return true; // 授業側にdepartmentが無いなら全部出す
+                          return c.department === dept; // departmentがある授業だけ一致判定
+                        })
                         .filter((c) => (seme ? c.semester === seme : true))
                         .filter((c) => (cell ? c.cellKey === cell : true))
                         .map((item) => (
