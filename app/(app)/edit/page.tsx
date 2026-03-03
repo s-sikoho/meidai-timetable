@@ -63,7 +63,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// 時間割の配置（cell -> courseId）
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { supabase } from "@/lib/supabase/client";
+
 type Entries = Partial<Record<CellKey, string>>;
 type Intensives = Partial<Record<Day, string>>;
 
@@ -82,6 +90,47 @@ export default function TimetablePage() {
   const [dept, setDept] = React.useState<Department | null>(null);
   const [cell, setCell] = React.useState<CellKey | null>(null);
   const [seme, SetSeme] = React.useState<Semester | null>(null);
+  const [open, setOpen] = React.useState(false);
+  const [term, setTerm] = React.useState<string>(""); // ダイアログ内で選ぶ
+  const [saving, setSaving] = React.useState(false);
+
+  const handleOpen = () => {
+    setTerm(""); // 毎回リセットしたいなら
+    setOpen(true);
+  };
+
+  async function onSave(
+    term: string,
+    entries: Entries,
+    intensives: Intensives,
+  ) {
+    const {
+      data: { user },
+      error: userErr,
+    } = await supabase.auth.getUser();
+    if (userErr) throw userErr;
+    if (!user) throw new Error("Not authenticated");
+
+    const { error } = await supabase
+      .from("timetables")
+      .upsert(
+        { user_id: user.id, term, entries, intensives },
+        { onConflict: "user_id,term" },
+      );
+
+    if (error) throw error;
+  }
+
+  const handleConfirmSave = async () => {
+    if (!term) return; // 未選択なら何もしない（またはエラー表示）
+    try {
+      setSaving(true);
+      await onSave(term, entries, intensives);
+      setOpen(false);
+    } finally {
+      setSaving(false);
+    }
+  };
   const CLEAR_VALUE = "__CLEAR__" as const;
 
   const addToCell = React.useCallback(
@@ -255,143 +304,226 @@ export default function TimetablePage() {
         {/* 右：時間割 */}
         <div className="flex-1">
           <div className="mb-2 text-sm font-medium">時間割（1〜5限）</div>
+          <div className="space-y-3">
+            <div className="grid grid-cols-6 gap-2">
+              {/* ヘッダー行 */}
+              <div />
+              {DAYS.map((d) => (
+                <div key={d.key} className="text-center text-sm font-medium">
+                  {d.label}
+                </div>
+              ))}
+              {/* グリッド本体 */}
+              {PERIODS.map((p) => (
+                <React.Fragment key={p}>
+                  <div className="flex items-center justify-center text-sm font-medium">
+                    {p}限
+                  </div>
 
-          <div className="grid grid-cols-6 gap-2">
-            {/* ヘッダー行 */}
-            <div />
-            {DAYS.map((d) => (
-              <div key={d.key} className="text-center text-sm font-medium">
-                {d.label}
-              </div>
-            ))}
-            {/* グリッド本体 */}
-            {PERIODS.map((p) => (
-              <React.Fragment key={p}>
+                  {DAYS.map((d) => {
+                    const key = cellKey(d.key, p);
+                    const courseId = entries[key];
+                    const course = courseId
+                      ? COURSES.find((x) => x.id === courseId)
+                      : null;
+
+                    return (
+                      <TimetableCell
+                        key={key}
+                        id={`cell:${key}`}
+                        day={d.key}
+                        period={p}
+                        courseTitle={course?.title ?? null}
+                        courseSection={course?.section ?? null}
+                        courseTeacher={course?.teacher ?? null}
+                        onClick={() => {
+                          setActiveCell({ day: d.key, period: p });
+                          setOpenCellPicker(true);
+                        }}
+                        onClear={() => removeFromCell(d.key, p)}
+                      />
+                    );
+                  })}
+                </React.Fragment>
+              ))}
+              {/* ★追加：少し離して「集中」行 */}
+              <div className="col-span-6 mt-3" /> {/* 余白だけの行（任意） */}
+              <React.Fragment key="intensive">
                 <div className="flex items-center justify-center text-sm font-medium">
-                  {p}限
+                  集中
                 </div>
 
                 {DAYS.map((d) => {
-                  const key = cellKey(d.key, p);
-                  const courseId = entries[key];
+                  // 集中セル用のID（droppable用）。cellKey型とは別なので文字列でOK
+                  const id = `cell:intensive:${d.key}`;
+                  const courseId = intensives[d.key];
                   const course = courseId
                     ? COURSES.find((x) => x.id === courseId)
                     : null;
 
                   return (
                     <TimetableCell
-                      key={key}
-                      id={`cell:${key}`}
+                      key={id}
+                      id={id}
                       day={d.key}
-                      period={p}
+                      period="intensive" // 表示/aria用に必要なら別propsにするのが理想
                       courseTitle={course?.title ?? null}
                       courseSection={course?.section ?? null}
                       courseTeacher={course?.teacher ?? null}
                       onClick={() => {
-                        setActiveCell({ day: d.key, period: p });
+                        setActiveCell({ day: d.key, period: "intensive" });
                         setOpenCellPicker(true);
                       }}
-                      onClear={() => removeFromCell(d.key, p)}
+                      onClear={() => removeIntensive(d.key)}
                     />
                   );
                 })}
               </React.Fragment>
-            ))}
-            {/* ★追加：少し離して「集中」行 */}
-            <div className="col-span-6 mt-3" /> {/* 余白だけの行（任意） */}
-            <React.Fragment key="intensive">
-              <div className="flex items-center justify-center text-sm font-medium">
-                集中
-              </div>
+            </div>
 
-              {DAYS.map((d) => {
-                // 集中セル用のID（droppable用）。cellKey型とは別なので文字列でOK
-                const id = `cell:intensive:${d.key}`;
-                const courseId = intensives[d.key];
-                const course = courseId
-                  ? COURSES.find((x) => x.id === courseId)
-                  : null;
+            {/* クリック追加：セル用の選択メニュー */}
+            <Popover open={openCellPicker} onOpenChange={setOpenCellPicker}>
+              <PopoverTrigger asChild>
+                <span />
+              </PopoverTrigger>
 
-                return (
-                  <TimetableCell
-                    key={id}
-                    id={id}
-                    day={d.key}
-                    period="intensive" // 表示/aria用に必要なら別propsにするのが理想
-                    courseTitle={course?.title ?? null}
-                    courseSection={course?.section ?? null}
-                    courseTeacher={course?.teacher ?? null}
-                    onClick={() => {
-                      setActiveCell({ day: d.key, period: "intensive" });
-                      setOpenCellPicker(true);
-                    }}
-                    onClear={() => removeIntensive(d.key)}
-                  />
-                );
-              })}
-            </React.Fragment>
-          </div>
-
-          {/* クリック追加：セル用の選択メニュー */}
-          <Popover open={openCellPicker} onOpenChange={setOpenCellPicker}>
-            <PopoverTrigger asChild>
-              <span />
-            </PopoverTrigger>
-
-            <PopoverContent className="w-80 p-0" align="center">
-              <Command>
-                <CommandInput placeholder="授業を検索…" />
-                <CommandEmpty>見つかりません</CommandEmpty>
-                <CommandGroup heading="授業">
-                  <ScrollArea className="h-90 pr-3">
-                    {COURSES.filter((c) => {
-                      if (!activeCell) return false;
-                      if (activeCell.period === "intensive") {
+              <PopoverContent className="w-80 p-0" align="center">
+                <Command>
+                  <CommandInput placeholder="授業を検索…" />
+                  <CommandEmpty>見つかりません</CommandEmpty>
+                  <CommandGroup heading="授業">
+                    <ScrollArea className="h-90 pr-3">
+                      {COURSES.filter((c) => {
+                        if (!activeCell) return false;
+                        if (activeCell.period === "intensive") {
+                          return (
+                            c.semester === "春集中" || c.semester === "秋集中"
+                          );
+                        }
                         return (
-                          c.semester === "春集中" || c.semester === "秋集中"
+                          c.cellKey != null &&
+                          c.cellKey ===
+                            cellKey(activeCell.day, activeCell.period)
                         );
-                      }
-                      return (
-                        c.cellKey != null &&
-                        c.cellKey === cellKey(activeCell.day, activeCell.period)
-                      );
-                    }).map((c) => (
-                      <CommandItem
-                        key={c.id}
-                        value={`${c.title}__${c.id}`}
-                        onSelect={() => {
-                          if (!activeCell) return;
-                          if (activeCell.period === "intensive") {
-                            addIntensive(activeCell.day, c.id);
+                      }).map((c) => (
+                        <CommandItem
+                          key={c.id}
+                          value={`${c.title}__${c.id}`}
+                          onSelect={() => {
+                            if (!activeCell) return;
+                            if (activeCell.period === "intensive") {
+                              addIntensive(activeCell.day, c.id);
+                              setOpenCellPicker(false);
+                              return;
+                            }
+                            addToCell(activeCell.day, activeCell.period, c.id);
                             setOpenCellPicker(false);
-                            return;
-                          }
-                          addToCell(activeCell.day, activeCell.period, c.id);
-                          setOpenCellPicker(false);
-                        }}
-                        className={cn(
-                          "!rounded-none", // ★丸み消す（確実に）
-                          "border-b border-border",
-                          "overflow-hidden", // これは残してOK（不要なら消しても可）
+                          }}
+                          className={cn(
+                            "!rounded-none", // ★丸み消す（確実に）
+                            "border-b border-border",
+                            "overflow-hidden", // これは残してOK（不要なら消しても可）
 
-                          c.section === "言語教養" && "bg-pink-100",
-                          c.section === "自然教養" && "bg-sky-100",
-                          c.section === "専門基礎" && "bg-purple-100",
-                          c.section === "専門" && "bg-orange-100",
+                            c.section === "言語教養" && "bg-pink-100",
+                            c.section === "自然教養" && "bg-sky-100",
+                            c.section === "専門基礎" && "bg-purple-100",
+                            c.section === "専門" && "bg-orange-100",
 
-                          "data-[selected=true]:ring-2 data-[selected=true]:ring-primary data-[selected=true]:ring-inset",
-                          "hover:ring-2 hover:ring-primary hover:ring-inset",
-                          "data-[selected=true]:!bg-transparent hover:!bg-transparent",
-                        )}
+                            "data-[selected=true]:ring-2 data-[selected=true]:ring-primary data-[selected=true]:ring-inset",
+                            "hover:ring-2 hover:ring-primary hover:ring-inset",
+                            "data-[selected=true]:!bg-transparent hover:!bg-transparent",
+                          )}
+                        >
+                          {c.title}:{c.teacher ? c.teacher : ""}
+                        </CommandItem>
+                      ))}
+                    </ScrollArea>
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            <div className="flex justify-end gap-2">
+              <Select>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="読み込み先" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 4 }, (_, i) => i + 1).flatMap(
+                    (year) => [
+                      <SelectItem
+                        key={`${year}-spring`}
+                        value={`${year}-spring`}
                       >
-                        {c.title}:{c.teacher ? c.teacher : ""}
-                      </CommandItem>
-                    ))}
-                  </ScrollArea>
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
+                        {year}年-春
+                      </SelectItem>,
+                      <SelectItem key={`${year}-fall`} value={`${year}-fall`}>
+                        {year}年-秋
+                      </SelectItem>,
+                    ],
+                  )}
+                </SelectContent>
+              </Select>
+              <Button type="button">読み込み</Button>
+              <Button type="button" onClick={handleOpen}>
+                保存
+              </Button>
+
+              {/* 保存先選択ダイアログ */}
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>保存先を選択</DialogTitle>
+                  </DialogHeader>
+
+                  <div className="space-y-2">
+                    <Select value={term} onValueChange={setTerm}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="例：1年-春 / 2年-秋" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        {Array.from({ length: 4 }, (_, i) => i + 1).flatMap(
+                          (year) => [
+                            <SelectItem
+                              key={`${year}-spring`}
+                              value={`${year}-spring`}
+                            >
+                              {year}年-春
+                            </SelectItem>,
+                            <SelectItem
+                              key={`${year}-fall`}
+                              value={`${year}-fall`}
+                            >
+                              {year}年-秋
+                            </SelectItem>,
+                          ],
+                        )}
+                      </SelectContent>
+                    </Select>
+
+                    {/* ここに「上書き保存します」など注意文を入れても良い */}
+                  </div>
+
+                  <DialogFooter className="gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setOpen(false)}
+                    >
+                      キャンセル
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={handleConfirmSave}
+                      disabled={!term || saving}
+                    >
+                      {saving ? "保存中..." : "この保存先で保存"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
         </div>
       </div>
 
