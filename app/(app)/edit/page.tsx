@@ -355,45 +355,38 @@ export default function TimetablePage() {
                         c.cellKey != null &&
                         c.cellKey === cellKey(activeCell.day, activeCell.period)
                       );
-                    })
-                      .filter((c) => {
-                        if (!dept) return true;
-                        if (c.department === "全学") return true;
-                        return c.department === dept;
-                      })
-                      .filter((c) => (seme ? c.semester === seme : true))
-                      .map((c) => (
-                        <CommandItem
-                          key={c.id}
-                          value={`${c.title}__${c.id}`}
-                          onSelect={() => {
-                            if (!activeCell) return;
-                            if (activeCell.period === "intensive") {
-                              addIntensive(activeCell.day, c.id);
-                              setOpenCellPicker(false);
-                              return;
-                            }
-                            addToCell(activeCell.day, activeCell.period, c.id);
+                    }).map((c) => (
+                      <CommandItem
+                        key={c.id}
+                        value={`${c.title}__${c.id}`}
+                        onSelect={() => {
+                          if (!activeCell) return;
+                          if (activeCell.period === "intensive") {
+                            addIntensive(activeCell.day, c.id);
                             setOpenCellPicker(false);
-                          }}
-                          className={cn(
-                            "!rounded-none", // ★丸み消す（確実に）
-                            "border-b border-border",
-                            "overflow-hidden", // これは残してOK（不要なら消しても可）
+                            return;
+                          }
+                          addToCell(activeCell.day, activeCell.period, c.id);
+                          setOpenCellPicker(false);
+                        }}
+                        className={cn(
+                          "!rounded-none", // ★丸み消す（確実に）
+                          "border-b border-border",
+                          "overflow-hidden", // これは残してOK（不要なら消しても可）
 
-                            c.section === "言語教養" && "bg-pink-100",
-                            c.section === "自然教養" && "bg-sky-100",
-                            c.section === "専門基礎" && "bg-purple-100",
-                            c.section === "専門" && "bg-orange-100",
+                          c.section === "言語教養" && "bg-pink-100",
+                          c.section === "自然教養" && "bg-sky-100",
+                          c.section === "専門基礎" && "bg-purple-100",
+                          c.section === "専門" && "bg-orange-100",
 
-                            "data-[selected=true]:ring-2 data-[selected=true]:ring-primary data-[selected=true]:ring-inset",
-                            "hover:ring-2 hover:ring-primary hover:ring-inset",
-                            "data-[selected=true]:!bg-transparent hover:!bg-transparent",
-                          )}
-                        >
-                          {c.title}:{c.teacher ? c.teacher : ""}
-                        </CommandItem>
-                      ))}
+                          "data-[selected=true]:ring-2 data-[selected=true]:ring-primary data-[selected=true]:ring-inset",
+                          "hover:ring-2 hover:ring-primary hover:ring-inset",
+                          "data-[selected=true]:!bg-transparent hover:!bg-transparent",
+                        )}
+                      >
+                        {c.title}:{c.teacher ? c.teacher : ""}
+                      </CommandItem>
+                    ))}
                   </ScrollArea>
                 </CommandGroup>
               </Command>
