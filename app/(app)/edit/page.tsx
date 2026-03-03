@@ -70,6 +70,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import LoadControls from "@/components/load";
 import { supabase } from "@/lib/supabase/client";
 
 type Entries = Partial<Record<CellKey, string>>;
@@ -443,27 +444,10 @@ export default function TimetablePage() {
               </PopoverContent>
             </Popover>
             <div className="flex justify-end gap-2">
-              <Select>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="読み込み先" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: 4 }, (_, i) => i + 1).flatMap(
-                    (year) => [
-                      <SelectItem
-                        key={`${year}-spring`}
-                        value={`${year}-spring`}
-                      >
-                        {year}年-春
-                      </SelectItem>,
-                      <SelectItem key={`${year}-fall`} value={`${year}-fall`}>
-                        {year}年-秋
-                      </SelectItem>,
-                    ],
-                  )}
-                </SelectContent>
-              </Select>
-              <Button type="button">読み込み</Button>
+              <LoadControls
+                setEntries={setEntries}
+                setIntensives={setIntensives}
+              />
               <Button type="button" onClick={handleOpen}>
                 保存
               </Button>
