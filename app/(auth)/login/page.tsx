@@ -33,9 +33,7 @@ export default function LoginPage() {
       setError(error.message);
       return;
     }
-
-    // ログイン成功 → 自分のページへ
-    router.push("/me");
+    router.push("/");
     router.refresh();
   }
   return (
@@ -54,7 +52,7 @@ export default function LoginPage() {
         <div className="space-y-1">
           <div className="text-xl font-semibold">Login to your account</div>
           <div className="text-sm text-muted-foreground">
-            Enter your email below to login to your account
+            emailとパスワードを入力
           </div>
         </div>
         <form onSubmit={onLogin}>
@@ -66,7 +64,7 @@ export default function LoginPage() {
                 variant="link"
                 className="p-0 h-auto justify-start cursor-pointer"
               >
-                <Link href="/signup">Create account</Link>
+                <Link href="/signup">アカウントを作成</Link>
               </Button>
             </div>
 

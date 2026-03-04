@@ -11,7 +11,7 @@ export default function AuthCallbackPage() {
     (async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
-        router.replace("/me");
+        router.replace("/");
         router.refresh();
       } else {
         router.replace("/login");

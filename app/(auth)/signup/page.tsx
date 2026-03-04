@@ -40,7 +40,7 @@ export default function SignupPage() {
         return;
       }
 
-      router.push("/me");
+      router.push("/");
       router.refresh();
     } finally {
       setLoading(false);
@@ -75,7 +75,7 @@ export default function SignupPage() {
 
             <div className="grid gap-2">
               <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">パスワード</Label>
               </div>
               <Input
                 id="password"
@@ -94,7 +94,7 @@ export default function SignupPage() {
               className="w-full cursor-pointer"
               disabled={loading}
             >
-              {loading ? "Loading..." : "Sign Up"}
+              {loading ? "Loading..." : "確認メールを送信"}
             </Button>
           </div>
         </form>

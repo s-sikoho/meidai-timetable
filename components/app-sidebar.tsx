@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { title: "my timetable", href: "/me" },
   { title: "create/edit", href: "/edit" },
   { title: "view timetabes", href: "/shareds" },
 ];

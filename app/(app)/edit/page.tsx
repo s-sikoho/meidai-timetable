@@ -91,13 +91,14 @@ export default function TimetablePage() {
   const [dept, setDept] = React.useState<Department | null>(null);
   const [cell, setCell] = React.useState<CellKey | null>(null);
   const [seme, SetSeme] = React.useState<Semester | null>(null);
-  const [open, setOpen] = React.useState(false);
-  const [term, setTerm] = React.useState<string>(""); // ダイアログ内で選ぶ
+  const [saveopen, setSaveOpen] = React.useState(false);
+  const [saveterm, setSaveTerm] = React.useState<string>("");
   const [saving, setSaving] = React.useState(false);
+  const [authError, setAuthError] = React.useState<string | null>(null);
 
   const handleOpen = () => {
-    setTerm(""); // 毎回リセットしたいなら
-    setOpen(true);
+    setSaveTerm("");
+    setSaveOpen(true);
   };
 
   async function onSave(
@@ -123,11 +124,19 @@ export default function TimetablePage() {
   }
 
   const handleConfirmSave = async () => {
-    if (!term) return; // 未選択なら何もしない（またはエラー表示）
+    if (!saveterm) return;
     try {
       setSaving(true);
-      await onSave(term, entries, intensives);
-      setOpen(false);
+      await onSave(saveterm, entries, intensives);
+      setSaveOpen(false);
+    } catch (e: unknown) {
+      console.error(e);
+      setAuthError(
+        e instanceof Error && e.message === "Auth session missing!"
+          ? "ログイン情報が取得できませんでした"
+          : "保存に失敗しました",
+      );
+      setSaveOpen(false);
     } finally {
       setSaving(false);
     }
@@ -139,7 +148,7 @@ export default function TimetablePage() {
       const key = cellKey(day, period);
       setEntries((prev) => ({
         ...prev,
-        [key]: courseId, // 仕様：上書き
+        [key]: courseId,
       }));
     },
     [],
@@ -181,7 +190,6 @@ export default function TimetablePage() {
     const courseId = String(event.active.id);
     const overId = event.over?.id ? String(event.over.id) : null;
 
-    // どこにも落とさなかった場合も overlay は消す
     setActiveCourseId(null);
 
     if (!overId) return;
@@ -195,7 +203,7 @@ export default function TimetablePage() {
     const key = overId.replace("cell:", "") as CellKey;
     const [day, periodStr] = key.split("-");
     const periodNum = Number(periodStr);
-    if (!isPeriod(periodNum)) return; // ★追加
+    if (!isPeriod(periodNum)) return;
 
     addToCell(day as Day, periodNum, courseId);
   };
@@ -443,7 +451,7 @@ export default function TimetablePage() {
                 </Command>
               </PopoverContent>
             </Popover>
-            <div className="flex justify-end gap-2">
+            <div className="relative flex justify-end gap-2">
               <LoadControls
                 setEntries={setEntries}
                 setIntensives={setIntensives}
@@ -453,14 +461,14 @@ export default function TimetablePage() {
               </Button>
 
               {/* 保存先選択ダイアログ */}
-              <Dialog open={open} onOpenChange={setOpen}>
+              <Dialog open={saveopen} onOpenChange={setSaveOpen}>
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>保存先を選択</DialogTitle>
                   </DialogHeader>
 
                   <div className="space-y-2">
-                    <Select value={term} onValueChange={setTerm}>
+                    <Select value={saveterm} onValueChange={setSaveTerm}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="例：1年-春 / 2年-秋" />
                       </SelectTrigger>
@@ -484,34 +492,37 @@ export default function TimetablePage() {
                         )}
                       </SelectContent>
                     </Select>
-
-                    {/* ここに「上書き保存します」など注意文を入れても良い */}
                   </div>
 
                   <DialogFooter className="gap-2">
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => setOpen(false)}
+                      onClick={() => setSaveOpen(false)}
                     >
                       キャンセル
                     </Button>
                     <Button
                       type="button"
                       onClick={handleConfirmSave}
-                      disabled={!term || saving}
+                      disabled={!saveterm || saving}
                     >
                       {saving ? "保存中..." : "この保存先で保存"}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+              {authError && (
+                <div className="absolute -bottom-6 right-0 text-sm text-red-600">
+                  {authError}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* ★ここが「ドラッグ中はファイルアイコンで小さく」の本体 */}
+      {/*ドラッグ中はファイルアイコンで小さく*/}
       <DragOverlay dropAnimation={null}>
         {activeCourse ? <DraggingFileChip title={activeCourse.title} /> : null}
       </DragOverlay>
@@ -594,12 +605,9 @@ function TimetableCell({
     >
       {courseTitle ? (
         <>
-          {/* ★×に被らないよう右を空けつつ、長いタイトルは折り返し（最大2行） */}
           <div className="text-xs font-medium leading-snug">
             {ellipsis(courseTitle, 7)}
           </div>
-
-          {/* ★teacherは1行にして省略（必要ならline-clamp-2でもOK） */}
           {courseTeacher ? (
             <div className="mt-0.5 text-[11px] leading-snug text-muted-foreground truncate">
               {courseTeacher}
@@ -629,7 +637,6 @@ function TimetableCell({
 
 /**
  * DragOverlayで表示する「小さいファイルアイコン」の見た目
- * - “カード本体”とは別物なので、ドラッグ中の見た目を自由にデザインできる
  */
 function DraggingFileChip({ title }: { title: string }) {
   return (
