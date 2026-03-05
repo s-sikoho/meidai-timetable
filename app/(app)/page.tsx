@@ -188,7 +188,7 @@ function ViewTimetableCell({
     <Card
       className={cn(
         "relative aspect-square w-full rounded-md p-2 pr-8 cursor-pointer transition overflow-hidden",
-        courseSection === "言語教養" && "bg-pink-100",
+        courseSection === "現代教養" && "bg-pink-100",
         courseSection === "自然教養" && "bg-sky-100",
         courseSection === "専門基礎" && "bg-purple-100",
         courseSection === "専門" && "bg-orange-100",

@@ -431,7 +431,7 @@ export default function TimetablePage() {
                             "border-b border-border",
                             "overflow-hidden", // これは残してOK（不要なら消しても可）
 
-                            c.section === "言語教養" && "bg-pink-100",
+                            c.section === "現代教養" && "bg-pink-100",
                             c.section === "自然教養" && "bg-sky-100",
                             c.section === "専門基礎" && "bg-purple-100",
                             c.section === "専門" && "bg-orange-100",
@@ -545,7 +545,7 @@ function CourseDraggable({ course }: { course: Course }) {
       style={style}
       className={cn(
         "cursor-grab select-none rounded-md p-3 active:cursor-grabbing",
-        course.section === "言語教養" && "bg-pink-100",
+        course.section === "現代教養" && "bg-pink-100",
         course.section === "自然教養" && "bg-sky-100",
         course.section === "専門基礎" && "bg-purple-100",
         course.section === "専門" && "bg-orange-100",
@@ -592,7 +592,7 @@ function TimetableCell({
       className={cn(
         "relative h-20 rounded-md p-2 pr-8 cursor-pointer transition overflow-hidden", // ★pr-8 + overflow-hidden
         isOver && "ring-2 ring-primary",
-        courseSection === "言語教養" && "bg-pink-100",
+        courseSection === "現代教養" && "bg-pink-100",
         courseSection === "自然教養" && "bg-sky-100",
         courseSection === "専門基礎" && "bg-purple-100",
         courseSection === "専門" && "bg-orange-100",

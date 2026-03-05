@@ -3,8 +3,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-1",
     title: "信号処理",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Mon-1",
     teacher: "戸田 智基 / TODA Tomoki",
@@ -12,8 +12,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-2",
     title: "離散数学及び演習",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Mon-3",
     teacher: "外山 勝彦 / TOYAMA Katsuhiko",
@@ -21,8 +21,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-3",
     title: "オブジェクト指向言語及び演習1(2024年度以降入学学生)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Tue-1",
     teacher:
@@ -31,8 +31,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-4",
     title: "オブジェクト指向言語及び演習(2023年度以前入学学生)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Tue-1",
     teacher:
@@ -41,8 +41,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-5",
     title: "計算機アーキテクチャ基礎及び演習2",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Tue-2",
     teacher: "本田 晋也 / HONDA Shinya",
@@ -50,8 +50,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-6",
     title: "非手続型言語及び演習",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Tue-3",
     teacher: "酒井 正彦 / SAKAI Masahiko",
@@ -59,8 +59,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-7",
     title: "情報倫理と法",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Wed-2",
     teacher: "秋庭 史典 植村 元雄 / AKIBA Fuminori UEMURA Motoo",
@@ -68,8 +68,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-8",
     title: "コンピュータ科学実験a(旧:2)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Wed-3",
     teacher: "藤井 慶輔 森﨑 修司 / FUJII Keisuke MORISAKI Shuji",
@@ -77,8 +77,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-9",
     title: "機械学習",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Thu-1",
     teacher: "森 健策 / MORI Kensaku",
@@ -86,8 +86,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-10",
     title: "システム検証及び演習",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Thu-2",
     teacher: "結縁 祥治 中澤 巧爾 / YUEN Shoji NAKAZAWA Koji",
@@ -95,8 +95,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-11",
     title: "数値解析及び演習",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春1",
     cellKey: "Fri-1",
     teacher: "片桐 孝洋 椋木 大地 / KATAGIRI Takahiro MUKUNOKI Daichi",
@@ -104,8 +104,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-12",
     title: "代数的構造",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Mon-2",
     teacher: "外山 勝彦 / TOYAMA Katsuhiko",
@@ -113,8 +113,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-13",
     title: "データベース1",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Mon-2",
     teacher: "石川 佳治 渡邉 陽介 / ISHIKAWA Yoshiharu WATANABE Yousuke",
@@ -122,8 +122,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-14",
     title: "オブジェクト指向言語及び演習2(2024年度以降入学生対象)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Mon-3",
     teacher:
@@ -132,8 +132,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-15",
     title: "PBL2",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Mon-3",
     teacher:
@@ -142,8 +142,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-16",
     title: "ソフトウエア開発法及び演習",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Mon-4",
     teacher:
@@ -152,8 +152,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-17",
     title: "論理設計及び演習1",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Tue-1",
     teacher:
@@ -162,8 +162,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-18",
     title: "オートマトン・形式言語及び演習",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Tue-2",
     teacher: "酒井 正彦 / SAKAI Masahiko",
@@ -171,8 +171,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-19",
     title: "計算理論",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Tue-2",
     teacher: "楫 勇一 / KAJI Yuichi",
@@ -180,8 +180,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-20",
     title: "PBL3",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Tue-3",
     teacher:
@@ -190,8 +190,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-21",
     title: "情報と職業1",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Wed-3",
     teacher:
@@ -200,8 +200,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-22",
     title: "先端計算機アーキテクチャ1",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Thu-2",
     teacher: "石原 亨 / ISHIHARA Tohru",
@@ -209,8 +209,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-23",
     title: "PBL1",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Fri-1",
     teacher: "北 栄輔 / KITA Eisuke",
@@ -218,8 +218,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-24",
     title: "マネジメント",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Fri-3",
     teacher: "北 栄輔 / KITA Eisuke",
@@ -227,8 +227,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-25",
     title: "情報と職業2",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "春2",
     cellKey: "Fri-4",
     teacher:
@@ -237,8 +237,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-26",
     title: "オペレーティング・システム及び演習1(2021年度以前入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Mon-1",
     teacher: "高田 広章 / TAKADA Hiroaki",
@@ -246,8 +246,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-27",
     title: "オペレーティング・システム基礎及び演習(2022年度以降入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Mon-1",
     teacher: "高田 広章 / TAKADA Hiroaki",
@@ -255,8 +255,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-28",
     title: "情報ネットワーク",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Mon-3",
     teacher: "村瀬 勉 / MURASE Tutomu",
@@ -264,8 +264,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-29",
     title: "データベース2",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Mon-4",
     teacher: "石川 佳治 渡邉 陽介 / ISHIKAWA Yoshiharu WATANABE Yousuke",
@@ -273,8 +273,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-30",
     title: "論理設計及び演習2",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Tue-1",
     teacher: "枝廣 正人 石原 亨 / EDAHIRO Masato ISHIHARA Tohru",
@@ -282,8 +282,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-31",
     title: "ソフトウェア設計法1(2021年度以前入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Tue-2",
     teacher: "森﨑 修司 / MORISAKI Shuji",
@@ -291,8 +291,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-32",
     title: "ソフトウェア工学基礎(2022年度以降入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Tue-2",
     teacher: "森﨑 修司 / MORISAKI Shuji",
@@ -300,8 +300,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-33",
     title: "生体情報処理(2021年度以前入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Tue-3",
     teacher: "工藤 博章 / KUDO Hiroaki",
@@ -309,8 +309,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-34",
     title: "生体情報基礎(2022年度以降入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Tue-3",
     teacher: "工藤 博章 / KUDO Hiroaki",
@@ -318,8 +318,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-35",
     title: "コンパイラ",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Tue-4",
     teacher: "結縁 祥治 / YUEN Shoji",
@@ -327,8 +327,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-36",
     title: "知能ロボットシステム制御(2021年度以前入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Wed-2",
     teacher: "井手 一郎 / IDE Ichiro",
@@ -336,8 +336,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-37",
     title: "知能システム制御(2022年度以降入学者)(旧:知能ロボットシステム制御)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Wed-2",
     teacher: "井手 一郎 / IDE Ichiro",
@@ -345,8 +345,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-38",
     title: "自然言語処理1",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Thu-1",
     teacher: "松原 茂樹 / MATSUBARA Shigeki",
@@ -354,8 +354,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-39",
     title: "先端計算機アーキテクチャ2",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Thu-2",
     teacher: "石原 亨 / ISHIHARA Tohru",
@@ -363,8 +363,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-40",
     title: "コンピュータ科学実験b(旧:1)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Wed-3",
     teacher: "藤井 慶輔 森﨑 修司 / FUJII Keisuke MORISAKI Shuji",
@@ -372,8 +372,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-41",
     title: "最適化1",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋1",
     cellKey: "Fri-2",
     teacher: "番原 睦則 / BAMBARA Mutsunori",
@@ -381,8 +381,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-42",
     title: "符号理論",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Mon-1",
     teacher: "楫 勇一 / KAJI Yuichi",
@@ -390,8 +390,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-43",
     title: "オペレーティング・システム及び演習2(2021年度以前入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Mon-1",
     teacher: "高田 広章 / TAKADA Hiroaki",
@@ -399,8 +399,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-44",
     title: "オペレーティング・システム実現及び演習(2022年度以降入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Mon-1",
     teacher: "高田 広章 / TAKADA Hiroaki",
@@ -408,8 +408,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-45",
     title: "ネットワークセキュリティ",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Mon-3",
     teacher: "村瀬 勉 / MURASE Tutomu",
@@ -417,8 +417,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-46",
     title: "生体情報処理(2022年度以降入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Mon-4",
     teacher: "工藤 博章 / KUDO Hiroaki",
@@ -426,8 +426,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-47",
     title: "計算機アーキテクチャ基礎及び演習1(2021年度以前入学生)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Tue-1",
     teacher: "松原 豊 / MATSUBARA Yutaka",
@@ -435,8 +435,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-48",
     title: "計算機アーキテクチャ基礎及び演習1(2022年度以後入学生)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Tue-1",
     teacher: "松原 豊 / MATSUBARA Yutaka",
@@ -444,8 +444,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-49",
     title: "ソフトウェア設計法2(2021年度以前入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Tue-2",
     teacher: "森﨑 修司 / MORISAKI Shuji",
@@ -453,8 +453,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-50",
     title: "ソフトウェア設計法(2022年度以降入学者)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Tue-2",
     teacher: "森﨑 修司 / MORISAKI Shuji",
@@ -462,8 +462,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-51",
     title: "画像処理",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Tue-3",
     teacher: "井手 一郎 / IDE Ichiro",
@@ -471,8 +471,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-52",
     title: "自然言語処理2",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Thu-1",
     teacher: "松原 茂樹 / MATSUBARA Shigeki",
@@ -480,8 +480,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-53",
     title: "コンピュータ科学実験c(旧:3)",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Thu-3",
     teacher: "藤井 慶輔 森﨑 修司 / FUJII Keisuke MORISAKI Shuji",
@@ -489,8 +489,8 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-54",
     title: "最適化2",
-    department: "情報",
     section: "専門",
+    department: "情報",
     semester: "秋2",
     cellKey: "Fri-2",
     teacher: "番原 睦則 / BAMBARA Mutsunori",
@@ -498,79 +498,79 @@ export const INFO_COURSES: Course[] = [
   {
     id: "info-55",
     title: "[遠隔]数理統計学",
-    department: "情報",
     section: "専門",
-    semester: "春1",
-    teacher: "Intensive(Fall) Other Other 東中 竜一郎 / HIGASHINAKA Ryuichiro",
+    department: "情報",
+    semester: "秋集中",
+    teacher: "東中 竜一郎 / HIGASHINAKA Ryuichiro",
   },
   {
     id: "info-56",
     title: "[遠隔]人工知能基礎1",
-    department: "情報",
     section: "専門",
-    semester: "春1",
-    teacher: "Intensive(Fall) Other Other 長尾 確 / NAGAO Katashi",
+    department: "情報",
+    semester: "秋集中",
+    teacher: "長尾 確 / NAGAO Katashi",
   },
   {
     id: "info-57",
     title: "[遠隔]人工知能基礎2",
-    department: "情報",
     section: "専門",
-    semester: "春1",
-    teacher: "Intensive(Fall) Other Other 長尾 確 / NAGAO Katashi",
+    department: "情報",
+    semester: "秋集中",
+    teacher: "長尾 確 / NAGAO Katashi",
   },
   {
     id: "info-58",
     title: "卒業研究(情報システム系)",
-    department: "情報",
     section: "専門",
-    semester: "春1",
+    department: "情報",
+    semester: "秋集中",
     teacher:
-      "Intensive(Fall) Other Other 結縁 祥治 楫 勇一 森﨑 修司 高田 広章 石原 亨 星野 哲也 片桐 孝洋 村瀬 勉 増田 豊 酒井 正彦 濱口 毅 山田 峻也 永井 亨 松原 豊 枝廣 正人 西田 直樹 中澤 巧爾 嶋田 創 番原 睦則 / YUEN Shoji KAJI Yuichi MORISAKI Shuji TAKADA Hiroaki ISHIHARA Tohru HOSHINO Tetsuya KATAGIRI Takahiro MURASE Tutomu MASUDA Yutaka SAKAI Masahiko HAMAGUCHI Takeshi YAMADA Shunya NAGAI Toru MATSUBARA Yutaka EDAHIRO Masato NISHIDA Naoki NAKAZAWA Koji SHIMADA Hajime BAMBARA Mutsunori",
+      "結縁 祥治 楫 勇一 森﨑 修司 高田 広章 石原 亨 星野 哲也 片桐 孝洋 村瀬 勉 増田 豊 酒井 正彦 濱口 毅 山田 峻也 永井 亨 松原 豊 枝廣 正人 西田 直樹 中澤 巧爾 嶋田 創 番原 睦則 / YUEN Shoji KAJI Yuichi MORISAKI Shuji TAKADA Hiroaki ISHIHARA Tohru HOSHINO Tetsuya KATAGIRI Takahiro MURASE Tutomu MASUDA Yutaka SAKAI Masahiko HAMAGUCHI Takeshi YAMADA Shunya NAGAI Toru MATSUBARA Yutaka EDAHIRO Masato NISHIDA Naoki NAKAZAWA Koji SHIMADA Hajime BAMBARA Mutsunori",
   },
   {
     id: "info-59",
     title: "卒業研究(数理情報系)",
-    department: "情報",
     section: "専門",
-    semester: "春1",
+    department: "情報",
+    semester: "秋集中",
     teacher:
-      "Intensive(Fall) Other Other 西村 治道 栗田 和宏 大舘 陽太 木原 貴行 吉信 康夫 佐藤 潤也 BUSCEMI Francesco 柳浦 睦憲 加藤 晃太郎 小野 廣隆 / NISHIMURA Harumichi KURITA Kazuhiro OTACHI Yota KIHARA Takayuki YOSHINOBU Yasuo SATOH Junya BUSCEMI Francesco YAGIURA Mutsunori KATO Kohtaro ONO Hirotaka",
+      "西村 治道 栗田 和宏 大舘 陽太 木原 貴行 吉信 康夫 佐藤 潤也 BUSCEMI Francesco 柳浦 睦憲 加藤 晃太郎 小野 廣隆 / NISHIMURA Harumichi KURITA Kazuhiro OTACHI Yota KIHARA Takayuki YOSHINOBU Yasuo SATOH Junya BUSCEMI Francesco YAGIURA Mutsunori KATO Kohtaro ONO Hirotaka",
   },
   {
     id: "info-60",
     title: "卒業研究(社会情報系)",
-    department: "情報",
     section: "専門",
-    semester: "春1",
+    department: "情報",
+    semester: "秋集中",
     teacher:
-      "Intensive(Fall) Other Other 山本 竜大 吉村 真衣 立川 雅司 新美 倫子 丸山 康司 河村 則行 遠藤 守 久木田 水生 浦田 真由 中村 登志哉 後藤 明史 秋庭 史典 笠木 雅史 井原 伸浩 / YAMAMOTO Tatsuhiro YOSHIMURA Mai TACHIKAWA Masashi NIIMI Michiko MARUYAMA Yasushi KAWAMURA Noriyuki ENDO Mamoru KUKITA Minao URATA Mayu NAKAMURA Toshiya GOTO Akifumi AKIBA Fuminori KASAKI Masashi IHARA Nobuhiro",
+      "山本 竜大 吉村 真衣 立川 雅司 新美 倫子 丸山 康司 河村 則行 遠藤 守 久木田 水生 浦田 真由 中村 登志哉 後藤 明史 秋庭 史典 笠木 雅史 井原 伸浩 / YAMAMOTO Tatsuhiro YOSHIMURA Mai TACHIKAWA Masashi NIIMI Michiko MARUYAMA Yasushi KAWAMURA Noriyuki ENDO Mamoru KUKITA Minao URATA Mayu NAKAMURA Toshiya GOTO Akifumi AKIBA Fuminori KASAKI Masashi IHARA Nobuhiro",
   },
   {
     id: "info-61",
     title: "卒業研究(知能システム系)",
-    department: "情報",
     section: "専門",
-    semester: "春1",
+    department: "情報",
+    semester: "秋集中",
     teacher:
-      "Intensive(Fall) Other Other 東中 竜一郎 石川 佳治 戸田 智基 井手 一郎 杉浦 健人 藤井 慶輔 外山 勝彦 武田 一哉 工藤 博章 森 健策 長尾 確 大平 茂輝 出口 大輔 小田 昌宏 伊藤 滉一朗 HUANG Wen Chin 是津 耕司 榎堀 優 松原 茂樹 笹野 遼平 駒水 孝裕 / HIGASHINAKA Ryuichiro ISHIKAWA Yoshiharu TODA Tomoki IDE Ichiro SUGIURA Kento FUJII Keisuke TOYAMA Katsuhiko TAKEDA Kazuya KUDO Hiroaki MORI Kensaku NAGAO Katashi OHIRA Shigeki DEGUCHI Daisuke ODA Masahiro ITO Koichiro HUANG Wen Chin ZETTSU Koji ENOKIBORI Yu MATSUBARA Shigeki SASANO Ryohei KOMAMIZU Takahiro",
+      "東中 竜一郎 石川 佳治 戸田 智基 井手 一郎 杉浦 健人 藤井 慶輔 外山 勝彦 武田 一哉 工藤 博章 森 健策 長尾 確 大平 茂輝 出口 大輔 小田 昌宏 伊藤 滉一朗 HUANG Wen Chin 是津 耕司 榎堀 優 松原 茂樹 笹野 遼平 駒水 孝裕 / HIGASHINAKA Ryuichiro ISHIKAWA Yoshiharu TODA Tomoki IDE Ichiro SUGIURA Kento FUJII Keisuke TOYAMA Katsuhiko TAKEDA Kazuya KUDO Hiroaki MORI Kensaku NAGAO Katashi OHIRA Shigeki DEGUCHI Daisuke ODA Masahiro ITO Koichiro HUANG Wen Chin ZETTSU Koji ENOKIBORI Yu MATSUBARA Shigeki SASANO Ryohei KOMAMIZU Takahiro",
   },
   {
     id: "info-62",
     title: "卒業研究(複雑システム系)",
-    department: "情報",
     section: "専門",
-    semester: "春1",
+    department: "情報",
+    semester: "秋集中",
     teacher:
-      "Intensive(Fall) Other Other 青木 摂之 太田 元規 吉田 紀生 東 雅大 松田 圭悟 鈴木 泰博 出川 智啓 北 栄輔 永峰 康一郎 張 賀東 SONG Yuxi 松本 健太郎 内山 知実 中村 泰之 小池 亮太郎 安田 耕二 塚本 眞幸 鈴木 麗璽 長尾 征洋 谷村 省吾 丸山 善宏 時田 恵一郎 山西 芳裕 / AOKI Setsuyuki OTA Motonori YOSHIDA Norio HIGASHI Masahiro MATSUDA Keigo SUZUKI Yasuhiro DEGAWA Tomohiro KITA Eisuke NAGAMINE Koichiro ZHANG Hedong SONG Yuxi MATSUMOTO Kentaro UCHIYAMA Tomomi NAKAMURA Yasuyuki KOIKE Ryotaro YASUDA Koji TSUKAMOTO Masaki SUZUKI Reiji NAGAO Masahiro TANIMURA Shogo MARUYAMA Yoshihiro TOKITA Keiichiro YAMANISHI Yoshihiro",
+      "青木 摂之 太田 元規 吉田 紀生 東 雅大 松田 圭悟 鈴木 泰博 出川 智啓 北 栄輔 永峰 康一郎 張 賀東 SONG Yuxi 松本 健太郎 内山 知実 中村 泰之 小池 亮太郎 安田 耕二 塚本 眞幸 鈴木 麗璽 長尾 征洋 谷村 省吾 丸山 善宏 時田 恵一郎 山西 芳裕 / AOKI Setsuyuki OTA Motonori YOSHIDA Norio HIGASHI Masahiro MATSUDA Keigo SUZUKI Yasuhiro DEGAWA Tomohiro KITA Eisuke NAGAMINE Koichiro ZHANG Hedong SONG Yuxi MATSUMOTO Kentaro UCHIYAMA Tomomi NAKAMURA Yasuyuki KOIKE Ryotaro YASUDA Koji TSUKAMOTO Masaki SUZUKI Reiji NAGAO Masahiro TANIMURA Shogo MARUYAMA Yoshihiro TOKITA Keiichiro YAMANISHI Yoshihiro",
   },
   {
     id: "info-63",
     title: "卒業研究(心理・認知科学系)",
-    department: "情報",
     section: "専門",
-    semester: "春1",
+    department: "情報",
+    semester: "秋集中",
     teacher:
-      "Intensive(Fall) Other Other 平井 真洋 石井 敬子 髙野 了太 川合 伸幸 三輪 和久 宮本 健史 孟 憲巍 北神 慎司 / HIRAI Masahiro ISHII Keiko TAKANO Ryota KAWAI Nobuyuki MIWA Kazuhisa MIYAMOTO Takeshi MENG Xianwei KITAGAMI Shinji",
+      "平井 真洋 石井 敬子 髙野 了太 川合 伸幸 三輪 和久 宮本 健史 孟 憲巍 北神 慎司 / HIRAI Masahiro ISHII Keiko TAKANO Ryota KAWAI Nobuyuki MIWA Kazuhisa MIYAMOTO Takeshi MENG Xianwei KITAGAMI Shinji",
   },
 ];
