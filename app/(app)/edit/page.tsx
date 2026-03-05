@@ -20,6 +20,8 @@ import {
   type Course,
   type Department,
   type Semester,
+  type Entries,
+  type Intensives,
 } from "@/lib/courses";
 import {
   DndContext,
@@ -72,9 +74,6 @@ import {
 } from "@/components/ui/dialog";
 import LoadControls from "@/components/load";
 import { supabase } from "@/lib/supabase/client";
-
-type Entries = Partial<Record<CellKey, string>>;
-type Intensives = Partial<Record<Day, string>>;
 
 export default function TimetablePage() {
   const [entries, setEntries] = React.useState<Entries>({});
@@ -312,7 +311,6 @@ export default function TimetablePage() {
 
         {/* 右：時間割 */}
         <div className="flex-1">
-          <div className="mb-2 text-sm font-medium">時間割（1〜5限）</div>
           <div className="space-y-3">
             <div className="grid grid-cols-6 gap-2">
               {/* ヘッダー行 */}

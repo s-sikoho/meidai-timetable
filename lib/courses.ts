@@ -30,6 +30,8 @@ export const CELL_KEYS: { key: CellKey; label: string }[] = DAYS.flatMap((d) =>
 export const isCellKey = (v: string): v is CellKey =>
   CELL_KEYS.some((c) => c.key === v);
 
+export type Entries = Partial<Record<CellKey, string>>;
+export type Intensives = Partial<Record<Day, string>>;
 export const DEPARTMENTS = [
   "医",
   "情報",
