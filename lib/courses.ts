@@ -42,6 +42,8 @@ export const isCellKey = (v: string): v is CellKey =>
 
 export type Entries = Partial<Record<CellKey, string>>;
 export type Intensives = Partial<Record<Day, string>>;
+export type Rooms = Partial<Record<CellKey, string>>;
+export type IntensiveRooms = Partial<Record<Day, string>>;
 export const DEPARTMENTS = [
   "医",
   "情報",

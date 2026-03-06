@@ -22,6 +22,8 @@ import {
   type Semester,
   type Entries,
   type Intensives,
+  type Rooms,
+  type IntensiveRooms,
 } from "@/lib/courses";
 import {
   DndContext,
@@ -72,6 +74,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import LoadControls from "@/components/load";
 import { supabase } from "@/lib/supabase/client";
 
@@ -94,6 +97,10 @@ export default function TimetablePage() {
   const [saveterm, setSaveTerm] = React.useState<string>("");
   const [saving, setSaving] = React.useState(false);
   const [authError, setAuthError] = React.useState<string | null>(null);
+  const [rooms, setRooms] = React.useState<Rooms>({});
+  const [intensiveRooms, setIntensiveRooms] = React.useState<IntensiveRooms>(
+    {},
+  );
 
   const handleOpen = () => {
     setSaveTerm("");
@@ -104,20 +111,28 @@ export default function TimetablePage() {
     term: string,
     entries: Entries,
     intensives: Intensives,
+    rooms: Rooms,
+    intensiveRooms: IntensiveRooms,
   ) {
     const {
       data: { user },
       error: userErr,
     } = await supabase.auth.getUser();
+
     if (userErr) throw userErr;
     if (!user) throw new Error("Not authenticated");
 
-    const { error } = await supabase
-      .from("timetables")
-      .upsert(
-        { user_id: user.id, term, entries, intensives },
-        { onConflict: "user_id,term" },
-      );
+    const { error } = await supabase.from("timetables").upsert(
+      {
+        user_id: user.id,
+        term,
+        entries,
+        intensives,
+        rooms,
+        intensive_rooms: intensiveRooms,
+      },
+      { onConflict: "user_id,term" },
+    );
 
     if (error) throw error;
   }
@@ -126,7 +141,7 @@ export default function TimetablePage() {
     if (!saveterm) return;
     try {
       setSaving(true);
-      await onSave(saveterm, entries, intensives);
+      await onSave(saveterm, entries, intensives, rooms, intensiveRooms);
       setSaveOpen(false);
     } catch (e: unknown) {
       console.error(e);
@@ -206,6 +221,34 @@ export default function TimetablePage() {
 
     addToCell(day as Day, periodNum, courseId);
   };
+
+  const setRoomForCell = React.useCallback(
+    (day: Day, period: Period, room: string) => {
+      const key = cellKey(day, period);
+      setRooms((prev) => {
+        const next = { ...prev };
+        if (room.trim() === "") {
+          delete next[key]; // 空は未設定扱い
+        } else {
+          next[key] = room;
+        }
+        return next;
+      });
+    },
+    [],
+  );
+
+  const setRoomForIntensive = React.useCallback((day: Day, room: string) => {
+    setIntensiveRooms((prev) => {
+      const next = { ...prev };
+      if (room.trim() === "") {
+        delete next[day];
+      } else {
+        next[day] = room;
+      }
+      return next;
+    });
+  }, []);
 
   const activeCourse = activeCourseId
     ? (COURSES.find((c) => c.id === activeCourseId) ?? null)
@@ -343,6 +386,8 @@ export default function TimetablePage() {
                         courseTitle={course?.title ?? null}
                         courseSection={course?.section ?? null}
                         courseTeacher={course?.teacher ?? null}
+                        rooms={rooms}
+                        intensiveRooms={intensiveRooms}
                         onClick={() => {
                           setActiveCell({ day: d.key, period: p });
                           setOpenCellPicker(true);
@@ -377,6 +422,8 @@ export default function TimetablePage() {
                       courseTitle={course?.title ?? null}
                       courseSection={course?.section ?? null}
                       courseTeacher={course?.teacher ?? null}
+                      rooms={rooms}
+                      intensiveRooms={intensiveRooms}
                       onClick={() => {
                         setActiveCell({ day: d.key, period: "intensive" });
                         setOpenCellPicker(true);
@@ -447,6 +494,41 @@ export default function TimetablePage() {
                     </ScrollArea>
                   </CommandGroup>
                 </Command>
+                <div className="border-t p-3 space-y-2">
+                  <div className="text-xs font-medium text-muted-foreground">
+                    教室
+                  </div>
+
+                  {/* activeCell に応じて入力を切り替える */}
+                  {activeCell ? (
+                    activeCell.period === "intensive" ? (
+                      <Input
+                        placeholder="例：E101 / 1号館205"
+                        value={intensiveRooms[activeCell.day] ?? ""}
+                        onChange={(e) =>
+                          setRoomForIntensive(activeCell.day, e.target.value)
+                        }
+                      />
+                    ) : (
+                      (() => {
+                        const period = activeCell.period;
+                        return (
+                          <Input
+                            placeholder="教室メモ"
+                            value={rooms[cellKey(activeCell.day, period)] ?? ""}
+                            onChange={(e) =>
+                              setRoomForCell(
+                                activeCell.day,
+                                period,
+                                e.target.value,
+                              )
+                            }
+                          />
+                        );
+                      })()
+                    )
+                  ) : null}
+                </div>
               </PopoverContent>
             </Popover>
             <div className="relative flex justify-end gap-2">
@@ -568,15 +650,19 @@ function TimetableCell({
   courseTitle,
   courseSection,
   courseTeacher,
+  rooms,
+  intensiveRooms,
   onClick,
   onClear,
 }: {
   id: string;
   day: Day;
-  period: number | "intensive";
+  period: Period | "intensive";
   courseTitle: string | null;
   courseSection: string | null;
   courseTeacher: string | null;
+  rooms: Rooms;
+  intensiveRooms: IntensiveRooms;
   onClick: () => void;
   onClear: () => void;
 }) {
@@ -590,7 +676,7 @@ function TimetableCell({
     <Card
       ref={setNodeRef}
       className={cn(
-        "relative h-20 rounded-md p-2 pr-8 cursor-pointer transition overflow-hidden", // ★pr-8 + overflow-hidden
+        "relative h-20 rounded-md p-2 pr-10 cursor-pointer transition overflow-hidden",
         isOver && "ring-2 ring-primary",
         courseSection === "現代教養" && "bg-pink-100",
         courseSection === "自然教養" && "bg-sky-100",
@@ -603,14 +689,25 @@ function TimetableCell({
     >
       {courseTitle ? (
         <>
-          <div className="text-xs font-medium leading-snug">
-            {ellipsis(courseTitle, 7)}
-          </div>
-          {courseTeacher ? (
-            <div className="mt-0.5 text-[11px] leading-snug text-muted-foreground truncate">
-              {courseTeacher}
+          {/* 3行を上詰めで並べる */}
+          <div className="flex h-full flex-col justify-start space-y-0.5">
+            {/* 授業名 */}
+            <div className="text-xs font-medium leading-tight truncate py-0.5">
+              {ellipsis(courseTitle, 12)}
             </div>
-          ) : null}
+
+            {/* teacher */}
+            <div className="text-[11px] leading-tight text-muted-foreground truncate py-0.5">
+              {courseTeacher ?? ""}
+            </div>
+
+            {/* 教室 */}
+            <div className="text-[11px] leading-tight text-muted-foreground truncate py-0.5">
+              {period === "intensive"
+                ? (intensiveRooms[day] ?? "")
+                : (rooms[cellKey(day, period)] ?? "")}
+            </div>
+          </div>
 
           <Button
             variant="ghost"
