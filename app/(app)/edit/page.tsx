@@ -63,7 +63,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -618,6 +617,11 @@ function CourseDraggable({ course }: { course: Course }) {
       id: course.id,
     });
 
+  function ellipsis(text: string | null | undefined, max: number) {
+    if (!text) return "";
+    return text.length > max ? text.slice(0, max) + "..." : text;
+  }
+
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     opacity: isDragging ? 0.35 : 1,
@@ -639,7 +643,11 @@ function CourseDraggable({ course }: { course: Course }) {
     >
       <div className="text-sm font-medium">{course.title}</div>
       <div className="text-xs text-muted-foreground">
-        {course.teacher ? course.teacher : "教官不明"}
+        {ellipsis(course.teacher ?? "教官不明", 25)}
+      </div>
+      <div className="text-xs text-muted-foreground">
+        {course.semester ? course.semester : ""}
+        {course.cellKey ? course.cellKey : ""}
       </div>
     </Card>
   );
