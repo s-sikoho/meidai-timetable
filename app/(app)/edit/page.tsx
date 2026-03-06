@@ -535,6 +535,8 @@ export default function TimetablePage() {
               <LoadControls
                 setEntries={setEntries}
                 setIntensives={setIntensives}
+                setRooms={setRooms}
+                setIntensiveRooms={setIntensiveRooms}
               />
               <Button type="button" onClick={handleOpen}>
                 保存

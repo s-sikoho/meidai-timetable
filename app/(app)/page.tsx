@@ -1,33 +1,16 @@
 "use client";
-import React, {
-  Fragment,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { Fragment, useLayoutEffect, useRef, useState } from "react";
 import {
   DAYS,
   PERIODS,
-  CELL_KEYS,
-  DEPARTMENTS,
-  SECTIONS,
-  SEMESTERS,
   COURSES,
-  isCellKey,
-  isDepartment,
-  isSemester,
-  isPeriod,
   cellKey,
   type Day,
   type Period,
-  type CellKey,
-  type Course,
-  type Department,
-  type Semester,
   type Entries,
   type Intensives,
+  type Rooms,
+  type IntensiveRooms,
 } from "@/lib/courses";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -36,6 +19,10 @@ import LoadControls from "@/components/load";
 export default function Home() {
   const [entries, setEntries] = useState<Entries>({});
   const [intensives, setIntensives] = useState<Intensives>({});
+  const [rooms, setRooms] = React.useState<Rooms>({});
+  const [intensiveRooms, setIntensiveRooms] = React.useState<IntensiveRooms>(
+    {},
+  );
 
   // 盤面の「基準幅」を決める（ここでデザインの元サイズを固定）
   // 左列 56px + 曜日列 5 * 120px = 656px（好みで調整OK）
@@ -67,6 +54,8 @@ export default function Home() {
             <LoadControls
               setEntries={setEntries}
               setIntensives={setIntensives}
+              setRooms={setRooms}
+              setIntensiveRooms={setIntensiveRooms}
             />
           </div>
         </div>
@@ -118,6 +107,8 @@ export default function Home() {
                         courseTitle={course?.title ?? null}
                         courseSection={course?.section ?? null}
                         courseTeacher={course?.teacher ?? null}
+                        rooms={rooms}
+                        intensiveRooms={intensiveRooms}
                       />
                     );
                   })}
@@ -149,6 +140,8 @@ export default function Home() {
                       courseTitle={course?.title ?? null}
                       courseSection={course?.section ?? null}
                       courseTeacher={course?.teacher ?? null}
+                      rooms={rooms}
+                      intensiveRooms={intensiveRooms}
                     />
                   );
                 })}
@@ -171,13 +164,17 @@ function ViewTimetableCell({
   courseTitle,
   courseSection,
   courseTeacher,
+  rooms,
+  intensiveRooms,
 }: {
   id: string;
   day: Day;
-  period: number | "intensive";
+  period: Period | "intensive";
   courseTitle: string | null;
   courseSection: string | null;
   courseTeacher: string | null;
+  rooms: Rooms;
+  intensiveRooms: IntensiveRooms;
 }) {
   const ellipsis = (s: string, n = 7) => {
     const arr = Array.from(s); // 日本語でも崩れにくい
@@ -187,7 +184,7 @@ function ViewTimetableCell({
   return (
     <Card
       className={cn(
-        "relative aspect-square w-full rounded-md p-2 pr-8 cursor-pointer transition overflow-hidden",
+        "relative aspect-square w-full rounded-md px-2 py-2.5 pr-8 cursor-pointer transition overflow-hidden",
         courseSection === "現代教養" && "bg-pink-100",
         courseSection === "自然教養" && "bg-sky-100",
         courseSection === "専門基礎" && "bg-purple-100",
@@ -195,18 +192,26 @@ function ViewTimetableCell({
       )}
     >
       {courseTitle ? (
-        <>
-          <div className="text-xs font-medium leading-snug">
-            {ellipsis(courseTitle, 7)}
+        <div className="flex h-full flex-col justify-between">
+          {/* 授業名 */}
+          <div className="text-[15px] font-medium leading-snug truncate">
+            {ellipsis(courseTitle, 12)}
           </div>
-          {courseTeacher ? (
-            <div className="mt-0.5 text-[11px] leading-snug text-muted-foreground truncate">
-              {courseTeacher}
-            </div>
-          ) : null}
-        </>
+
+          {/* teacher */}
+          <div className="text-[13px] leading-snug text-muted-foreground truncate">
+            {courseTeacher ?? ""}
+          </div>
+
+          {/* 教室 */}
+          <div className="text-[13px] leading-snug text-muted-foreground truncate">
+            {period === "intensive"
+              ? (intensiveRooms[day] ?? "")
+              : (rooms[cellKey(day, period)] ?? "")}
+          </div>
+        </div>
       ) : (
-        <div></div>
+        <div />
       )}
     </Card>
   );

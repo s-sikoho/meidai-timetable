@@ -8,16 +8,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase/client";
-
-type Entries = Partial<Record<string, string>>;
-type Intensives = Partial<Record<string, string>>;
+import type { Entries, Intensives, Rooms, IntensiveRooms } from "@/lib/courses";
 
 export default function LoadControls({
   setEntries,
   setIntensives,
+  setRooms,
+  setIntensiveRooms,
 }: {
   setEntries: React.Dispatch<React.SetStateAction<Entries>>;
   setIntensives: React.Dispatch<React.SetStateAction<Intensives>>;
+  setRooms: React.Dispatch<React.SetStateAction<Rooms>>;
+  setIntensiveRooms: React.Dispatch<React.SetStateAction<IntensiveRooms>>;
 }) {
   const [loadTerm, setLoadTerm] = React.useState<string>("");
   const [loading, setLoading] = React.useState(false);
@@ -34,7 +36,7 @@ export default function LoadControls({
 
       const { data, error } = await supabase
         .from("timetables")
-        .select("entries,intensives")
+        .select("entries,intensives,rooms,intensive_rooms")
         .eq("user_id", auth.user.id)
         .eq("term", loadTerm)
         .maybeSingle();
@@ -43,6 +45,8 @@ export default function LoadControls({
 
       setEntries((data?.entries ?? {}) as Entries);
       setIntensives((data?.intensives ?? {}) as Intensives);
+      setRooms((data?.rooms ?? {}) as Rooms);
+      setIntensiveRooms((data?.intensive_rooms ?? {}) as IntensiveRooms);
     } catch (e) {
       console.error(e);
     } finally {
